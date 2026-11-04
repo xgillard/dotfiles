@@ -1158,6 +1158,10 @@ vim.keymap.set('n', '<leader>dn', function() vim.diagnostic.jump({ count = 1 }) 
 vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = '[D]iagnostic under cursor' })
 
 -- git
+-- déja mappé via <leader>gn, <leader>gp, <leader>h*
+-- mais on active quand meme le git diff pour un diff "visuel" avec
+-- ce mapping-ci.
+vim.keymap.set('n', '<leader>gd', ':Gitsigns diffthis<CR>', { desc = '[G]it [D]iff this buffer' })
 
 
 -- Debugging:
