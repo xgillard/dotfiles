@@ -367,21 +367,21 @@ do
     -- gitsigns.nvim's recommended keymaps:
     on_attach = function(bufnr)
       -- Navigation
-      vim.keymap.set('n', ']c', function()
+      vim.keymap.set('n', '<leader>gn', function()
         if vim.wo.diff then
           vim.cmd.normal { ']c', bang = true }
         else
           gitsigns.nav_hunk 'next'
         end
-      end, { desc = 'Jump to next git [c]hange', buf = bufnr })
+      end, { desc = 'Jump to next [g]it [n]ext change', buf = bufnr })
 
-      vim.keymap.set('n', '[c', function()
+      vim.keymap.set('n', '<leader>gp', function()
         if vim.wo.diff then
           vim.cmd.normal { '[c', bang = true }
         else
           gitsigns.nav_hunk 'prev'
         end
-      end, { desc = 'Jump to previous git [c]hange', buf = bufnr })
+      end, { desc = 'Jump to previous [g]it [p]revious change', buf = bufnr })
 
       -- Visual mode actions
       vim.keymap.set('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' } end, { desc = 'git [s]tage hunk', buf = bufnr })
@@ -1046,12 +1046,122 @@ end
 --- my own customizations 
 ----------------------------------------------------------------------------------------
 
+--- FILE Explorer
 vim.pack.add { gh 'nvim-tree/nvim-tree.lua' }
 require('nvim-tree').setup()
-vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', {desc = 'Toggle File Explorer'})
+-- mappings
+vim.keymap.set('n', '<leader>fe', ':NvimTreeToggle<CR>', {desc = 'Toggle File Explorer'})
+
+-- ****************************************************************************
+-- Debug Adapter
+-- ****************************************************************************
+vim.pack.add { gh 'mfussenegger/nvim-dap' }
+-- copied over from the dap installation
+local dap = require("dap")
+dap.configurations.c = {
+  {
+    name = "Launch",
+    type = "gdb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    args = {}, -- provide arguments if needed
+    cwd = "${workspaceFolder}",
+    stopAtBeginningOfMainSubprogram = false,
+  },
+  {
+    name = "Select and attach to process",
+    type = "gdb",
+    request = "attach",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    pid = function()
+      local name = vim.fn.input('Executable name (filter): ')
+      return require("dap.utils").pick_process({ filter = name })
+    end,
+    cwd = '${workspaceFolder}'
+  },
+  {
+    name = 'Attach to gdbserver :1234',
+    type = 'gdb',
+    request = 'attach',
+    target = 'localhost:1234',
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}'
+  }
+}
+dap.configurations.cpp = dap.configurations.c
+---
+--- rust specific debug configuration
+---
+dap.adapters["rust-gdb"] = {
+  type = "executable",
+  command = "rust-gdb",
+  args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+}
+dap.configurations.rust = {
+  {
+    name = "Launch",
+    type = "rust-gdb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    args = {}, -- provide arguments if needed
+    cwd = "${workspaceFolder}",
+    stopAtBeginningOfMainSubprogram = false,
+  },
+  {
+    name = "Select and attach to process",
+    type = "rust-gdb",
+    request = "attach",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    pid = function()
+      local name = vim.fn.input('Executable name (filter): ')
+      return require("dap.utils").pick_process({ filter = name })
+    end,
+    cwd = "${workspaceFolder}"
+  },
+  {
+    name = "Attach to gdbserver :1234",
+    type = "rust-gdb",
+    request = "attach",
+    target = "localhost:1234",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}'
+  }
+}
+
+vim.pack.add {{
+  src = 'https://github.com/mrcjkb/rustaceanvim',
+  -- To avoid being surprised by breaking changes,
+  -- I recommend you set a version range
+  version = vim.version.range('^9')
+}}
+
+-- mappings for rust 
+vim.keymap.set('n', '<leader>cb', ':Cargo build', {desc = '[C]argo [B]uild'})
+vim.keymap.set('n', '<leader>cr', ':Cargo run', {desc = '[C]argo [R]un'})
+vim.keymap.set('n', '<leader>rd', ':RustLsp debuggables<CR>', {desc = '[R]un [D]ebug'})
+
+-- navigating diagnostics
+vim.keymap.set('n', '<leader>dp', function() vim.diagnostic.jump({ count = -1 }) end, { desc = '[D]iagnostic [P]revious' })
+vim.keymap.set('n', '<leader>dn', function() vim.diagnostic.jump({ count = 1 }) end, { desc = '[D]iagnostic [N]ext' })
+vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = '[D]iagnostic under cursor' })
+
+-- git
 
 
 -- Debugging:
+--
 -- * set breakpoint <F5>
 -- * next <F9>
 -- * stop debugging <F10>
