@@ -1150,7 +1150,8 @@ vim.pack.add {{
 -- mappings for rust 
 vim.keymap.set('n', '<leader>cb', ':Cargo build', {desc = '[C]argo [B]uild'})
 vim.keymap.set('n', '<leader>cr', ':Cargo run', {desc = '[C]argo [R]un'})
-vim.keymap.set('n', '<leader>rd', ':RustLsp debuggables<CR>', {desc = '[R]un [D]ebug'})
+vim.keymap.set('n', '<leader>rr', ':RustLsp runnables<CR>', {desc = '[R]ust [R]un'})
+vim.keymap.set('n', '<leader>rd', ':RustLsp debuggables<CR>', {desc = '[R]ust [D]ebug'})
 
 -- navigating diagnostics
 vim.keymap.set('n', '<leader>dp', function() vim.diagnostic.jump({ count = -1 }) end, { desc = '[D]iagnostic [P]revious' })
