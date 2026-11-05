@@ -1181,6 +1181,14 @@ vim.keymap.set('n', '<leader>a:', ':Tabularize/:<CR>', {desc = "[a]lign on [:]"}
 vim.keymap.set('v', '<leader>a|', ':Tabularize/|<CR>', {desc = "[a]lign on [|]"})
 vim.keymap.set('n', '<leader>a|', ':Tabularize/|<CR>', {desc = "[a]lign on [|]"})
 
+-- aligner les ','
+vim.keymap.set('v', '<leader>a,', ':Tabularize/,<CR>', {desc = "[a]lign on [,]"})
+vim.keymap.set('n', '<leader>a,', ':Tabularize/,<CR>', {desc = "[a]lign on [,]"})
+
+-- ####### COPY TO CLIPBOARD ==================================================
+vim.keymap.set('n', '<leader>y', 'ggVG:*y"<CR>', {desc = "[y]ank to clipboard"})
+vim.keymap.set('v', '<leader>y', ':*y"<CR>',     {desc = "[y]ank to clipboard"})
+
 -- Debugging:
 --
 -- * set breakpoint <F5>
