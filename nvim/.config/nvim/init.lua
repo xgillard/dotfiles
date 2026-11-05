@@ -1164,6 +1164,22 @@ vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = '[D]iagnos
 -- ce mapping-ci.
 vim.keymap.set('n', '<leader>gd', ':Gitsigns diffthis<CR>', { desc = '[G]it [D]iff this buffer' })
 
+-- ####### ALIGNER LES ELEMENTS ###############################################
+vim.pack.add { gh 'godlygeek/tabular' }
+vim.keymap.set('v', '<leader>av', ':Tabularize/', {desc = "[a]lign [v]ertical (align symbol needs to be specified)"})
+vim.keymap.set('n', '<leader>av', ':Tabularize/', {desc = "[a]lign [v]ertical (align symbol needs to be specified)"})
+
+-- aligner les '='
+vim.keymap.set('v', '<leader>a=', ':Tabularize/=<CR>', {desc = "[a]lign on [=]"})
+vim.keymap.set('n', '<leader>a=', ':Tabularize/=<CR>', {desc = "[a]lign on [=]"})
+
+-- aligner les ':'
+vim.keymap.set('v', '<leader>a:', ':Tabularize/:<CR>', {desc = "[a]lign on [:]"})
+vim.keymap.set('n', '<leader>a:', ':Tabularize/:<CR>', {desc = "[a]lign on [:]"})
+
+-- aligner les '|'
+vim.keymap.set('v', '<leader>a|', ':Tabularize/|<CR>', {desc = "[a]lign on [|]"})
+vim.keymap.set('n', '<leader>a|', ':Tabularize/|<CR>', {desc = "[a]lign on [|]"})
 
 -- Debugging:
 --
