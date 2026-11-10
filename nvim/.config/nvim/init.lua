@@ -1,93 +1,6 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
--- ============================================================
--- SECTION 1: OPTIONS
--- Core Neovim settings, leaders, options
--- ============================================================
+-- Ma config pour Neovim
+-- {{{ OPTIONS              => Core Neovim settings, leaders, options
+-- ============================================================================
 do
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
@@ -110,7 +23,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -128,7 +41,7 @@ do
   vim.o.breakindent = true
 
   -- Enable undo/redo changes even after closing and reopening a file
-  vim.o.undofile = true
+  vim.o.undofile = false
 
   -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
   vim.o.ignorecase = true
@@ -175,12 +88,14 @@ do
 
   -- color column
   vim.o.colorcolumn = "80,120"
-end
 
--- ============================================================
--- SECTION 2: KEYMAPS & AUTOCMDS
--- basic keymaps, basic autocmds
--- ============================================================
+  -- folds
+  vim.o.foldmethod = 'marker'
+end
+-- }}}
+-- ============================================================================
+-- {{{ KEYMAPS  => basic keymaps, basic autocmds
+-- ============================================================================
 do
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
@@ -189,7 +104,29 @@ do
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-  -- Diagnostic Config & Keymaps
+  -- {{{ Mouvements
+  -- Remap (recursif) des touches ù et * pour la navigation (prev, next)
+  -- parce que les touches ] et [ ne sont pas pratiques à utiliser sur un
+  -- clavier azerty.
+  vim.keymap.set('n', 'ù', '[d', {desc = 'previous'})
+  vim.keymap.set('n', '*', ']d', {desc = 'next'})
+
+      -- Mode normal (hjkl) {{{
+      vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+      vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+      vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+      vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+      -- }}} hjkl
+      -- Fenetres {{{
+      vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+      vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+      vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+      vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+      -- }}}
+
+  -- }}}
+
+  -- {{{ Diagnostics Config & Keymaps
   --  See `:help vim.diagnostic.Opts`
   vim.diagnostic.config {
     update_in_insert = false,
@@ -201,7 +138,11 @@ do
     virtual_text = true, -- Text shows up at the end of the line
     virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
-    -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+    -- Auto open the float, so you can easily read the errors when jumping with `ùd` and `*d`
+    -- note la navigation ùd, *d vient du fait que j'ai remappé [ sur * et * sur d
+    -- alternativement, j'ai aussi configuré <leader>dp et <leader>dn qui font 
+    -- la meme chose. Mais comme c'est plus verbeux, je vais donner une chance
+    -- a ùd et *d
     jump = {
       on_jump = function(_, bufnr)
         vim.diagnostic.open_float {
@@ -214,6 +155,11 @@ do
   }
 
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+  vim.keymap.set('n', '<leader>dp', function() vim.diagnostic.jump({ count = -1 }) end, { desc = '[D]iagnostic [P]revious' })
+  vim.keymap.set('n', '<leader>dn', function() vim.diagnostic.jump({ count = 1 }) end, { desc = '[D]iagnostic [N]ext' })
+  vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = '[D]iagnostic under cursor' })
+  -- }}}  diagnostics
+
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -223,28 +169,10 @@ do
   -- or just use <C-\><C-n> to exit terminal mode
   vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-  -- TIP: Disable arrow keys in normal mode
-  -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-  -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-  -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-  -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
-  -- Keybinds to make split navigation easier.
-  --  Use CTRL+<hjkl> to switch between windows
-  --
-  --  See `:help wincmd` for a list of all window commands
-  vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-  vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-  vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-  vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
-  -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
-  -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
-  -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
-  -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
-  -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
-
-  -- [[ Basic Autocommands ]]
+end
+-- }}}
+-- ============================================================
+-- {{{ AUTOCOMMANDS 
   --  See `:help lua-guide-autocommands`
 
   -- Highlight when yanking (copying) text
@@ -252,37 +180,21 @@ do
   --  See `:help vim.hl.on_yank()`
   vim.api.nvim_create_autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
-    group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+    group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
   })
-end
-
+-- }}}
 -- ============================================================
--- SECTION 3: PLUGIN MANAGER INTRO
--- vim.pack intro, build hooks
+-- {{{ VIM.PACK & Build hooks
 -- ============================================================
 do
-  -- [[ Intro to `vim.pack` ]]
-  -- `vim.pack` is a new plugin manager built into Neovim,
-  --  which provides a Lua interface for installing and managing plugins.
-  --
-  --  See `:help vim.pack`, `:help vim.pack-examples` or the
-  --  excellent blog post from the creator of vim.pack and mini.nvim:
-  --  https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
-  --
-  --  To inspect plugin state and pending updates, run
-  --    :lua vim.pack.update(nil, { offline = true })
-  --
-  --  To update plugins, run
-  --    :lua vim.pack.update()
-  --
-  --
-  --  Throughout the rest of the config there will be examples
-  --  of how to install and configure plugins using `vim.pack`.
-  --
-  --  In this section we set up some autocommands to run build
-  --  steps for certain plugins after they are installed or updated.
 
+  -- Certains plugins ne sont ni du vimscript, ni du lua pur mais
+  -- écrits dans un langage compilé. par ex, en C. Donc il est 
+  -- nécessaire de pouvoir les (re)compiler apres qu'on les ait
+  -- installé ou updaté depuis leur repo.
+  -- C'est à ca que sert la fonction suivante (qui execute essentiellement
+  -- un simple appel à make pour le plugin visé).
   local function run_build(name, cmd, cwd)
     local result = vim.system(cmd, { cwd = cwd }):wait()
     if result.code ~= 0 then
@@ -294,23 +206,33 @@ do
     end
   end
 
-  -- This autocommand runs after a plugin is installed or updated and
-  --  runs the appropriate build command for that plugin if necessary.
-  --
+  -- Tous les plugins n'ont pas besoin d'être compilés apres installation.
+  -- Donc en prévoit le truc pour 3 plugins distincts: 
+  -- 1. fzf-telescope   => sert à faire un fuzzy search
+  -- 2. luasnip         => sert à injecter des snippets de code
+  -- 3. nvim-treesitter => sert à faire le highlight (on doit le recompiler
+  --       parce qu'il n'inclut pas les parsers lui meme. Ils sont téléchargés
+  --       depuis le web.)
   -- See `:help vim.pack-events`
   vim.api.nvim_create_autocmd('PackChanged', {
     callback = function(ev)
       local name = ev.data.spec.name
       local kind = ev.data.kind
-      if kind ~= 'install' and kind ~= 'update' then return end
+      if kind ~= 'install' and kind ~= 'update' then
+        return
+      end
 
-      if name == 'telescope-fzf-native.nvim' and vim.fn.executable 'make' == 1 then
+      if name == 'telescope-fzf-native.nvim'
+         and vim.fn.executable 'make' == 1
+      then
         run_build(name, { 'make' }, ev.data.path)
         return
       end
 
       if name == 'LuaSnip' then
-        if vim.fn.has 'win32' ~= 1 and vim.fn.executable 'make' == 1 then run_build(name, { 'make', 'install_jsregexp' }, ev.data.path) end
+        if vim.fn.has 'win32' ~= 1 and vim.fn.executable 'make' == 1 then
+          run_build(name, { 'make', 'install_jsregexp' }, ev.data.path)
+        end
         return
       end
 
@@ -328,28 +250,22 @@ end
 ---@param repo string
 ---@return string
 local function gh(repo) return 'https://github.com/' .. repo end
-
+-- }}}
 -- ============================================================
--- SECTION 4: UI / CORE UX PLUGINS
--- guess-indent, gitsigns, which-key, colorscheme, todo-comments, mini modules
+-- {{{ UI / CORE UX PLUGINS
 -- ============================================================
 do
   -- [[ Installing and Configuring Plugins ]]
-  --
-  -- To install a plugin simply call `vim.pack.add` with its git url.
-  -- This will download the default branch of the plugin, which will usually be `main` or `master`
-  -- You can also have more advanced specs, which we will talk about later.
-  --
   -- For most plugins its not enough to install them, you also need to call their `.setup()` to start them.
-  --
-  -- For example, lets say we want to install `guess-indent.nvim` - a plugin for
-  -- automatically detecting and setting the indentation.
-  --
-  -- We first install it from https://github.com/NMAC427/guess-indent.nvim
-  -- and then call its `setup()` function to start it with default settings.
+
+  -- {{{ guess-indent : détecter le type d'indentation
+  -- Install guess-indent, un plugin qui détecte l'indentation du fichier
+  -- courant et qui va setter expandtab, tabstop, shiftwidth en conséquence
   vim.pack.add { gh 'NMAC427/guess-indent.nvim' }
   require('guess-indent').setup {}
-
+  -- }}}
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -- {{{ gitsigns: intégration git au sein d'un buffer
   -- Here is a more advanced configuration example that passes options to `gitsigns.nvim`
   --
   -- See `:help gitsigns` to understand what each configuration key does.
@@ -358,11 +274,11 @@ do
   local gitsigns = require 'gitsigns'
   gitsigns.setup {
     signs = {
-      add = { text = '+' }, ---@diagnostic disable-line: missing-fields
-      change = { text = '~' }, ---@diagnostic disable-line: missing-fields
-      delete = { text = '_' }, ---@diagnostic disable-line: missing-fields
-      topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
-      changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
+        add          = { text = '+' }, ---@diagnostic disable-line: missing-fields
+        change       = { text = '~' }, ---@diagnostic disable-line: missing-fields
+        delete       = { text = '_' }, ---@diagnostic disable-line: missing-fields
+        topdelete    = { text = '‾' }, ---@diagnostic disable-line: missing-fields
+        changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
     },
     -- gitsigns.nvim's recommended keymaps:
     on_attach = function(bufnr)
@@ -405,6 +321,7 @@ do
       vim.keymap.set({ 'o', 'x' }, 'ih', gitsigns.select_hunk, { desc = 'text object [i]nside [h]unk', buf = bufnr })
     end,
   }
+  -- }}} gitsigns
 
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
@@ -493,6 +410,7 @@ do
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
 end
+-- }}}
 
 -- ============================================================
 -- SECTION 5: SEARCH & NAVIGATION
@@ -1153,10 +1071,6 @@ vim.keymap.set('n', '<leader>cr', ':Cargo run', {desc = '[C]argo [R]un'})
 vim.keymap.set('n', '<leader>rr', ':RustLsp runnables<CR>', {desc = '[R]ust [R]un'})
 vim.keymap.set('n', '<leader>rd', ':RustLsp debuggables<CR>', {desc = '[R]ust [D]ebug'})
 
--- navigating diagnostics
-vim.keymap.set('n', '<leader>dp', function() vim.diagnostic.jump({ count = -1 }) end, { desc = '[D]iagnostic [P]revious' })
-vim.keymap.set('n', '<leader>dn', function() vim.diagnostic.jump({ count = 1 }) end, { desc = '[D]iagnostic [N]ext' })
-vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = '[D]iagnostic under cursor' })
 
 -- git
 -- déja mappé via <leader>gn, <leader>gp, <leader>h*
