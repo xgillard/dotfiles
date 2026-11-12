@@ -108,8 +108,14 @@ do
   -- Remap (recursif) des touches ù et * pour la navigation (prev, next)
   -- parce que les touches ] et [ ne sont pas pratiques à utiliser sur un
   -- clavier azerty.
-  vim.keymap.set('n', 'ù', '[d', {desc = 'previous'})
-  vim.keymap.set('n', '*', ']d', {desc = 'next'})
+  -- -------------------------------------------------------------------------
+  -- Règle générale: je vais toujours mapper ù? *? vers [? et ]? 
+  -- mais je fais aussi faire le mapping <leader>?p et <leader>?n qui font
+  -- la meme chose. C'est juste pour les cas ou je veux pense il me faut 
+  -- "machin" le suivant, ou il me faut le "suivant machin"
+  -- -------------------------------------------------------------------------
+  vim.keymap.set('n' , 'ù' , '[' , {desc = 'previous' , remap=true})
+  vim.keymap.set('n' , '*' , ']' , {desc = 'next'     , remap=true})
 
       -- Mode normal (hjkl) {{{
       vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -283,21 +289,21 @@ do
     -- gitsigns.nvim's recommended keymaps:
     on_attach = function(bufnr)
       -- Navigation
-      vim.keymap.set('n', '<leader>gn', function()
+      vim.keymap.set('n', ']c', function()
         if vim.wo.diff then
           vim.cmd.normal { ']c', bang = true }
         else
           gitsigns.nav_hunk 'next'
         end
-      end, { desc = 'Jump to next [g]it [n]ext change', buf = bufnr })
+      end, { desc = 'Next [c]hange', buf = bufnr })
 
-      vim.keymap.set('n', '<leader>gp', function()
+      vim.keymap.set('n', '[c', function()
         if vim.wo.diff then
           vim.cmd.normal { '[c', bang = true }
         else
           gitsigns.nav_hunk 'prev'
         end
-      end, { desc = 'Jump to previous [g]it [p]revious change', buf = bufnr })
+      end, { desc = 'Previous [c]hange', buf = bufnr })
 
       -- Visual mode actions
       vim.keymap.set('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' } end, { desc = 'git [s]tage hunk', buf = bufnr })
@@ -322,8 +328,8 @@ do
     end,
   }
   -- }}} gitsigns
-
-  -- Useful plugin to show you pending keybinds.
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -- {{{ which-key: popup pour voir les keybindings possibles
   vim.pack.add { gh 'folke/which-key.nvim' }
   require('which-key').setup {
     -- Delay between pressing a key and opening which-key (milliseconds)
@@ -337,8 +343,9 @@ do
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
   }
-
-  -- [[ Colorscheme ]]
+  -- }}}
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -- {{{ Colorscheme : tokyonight
   -- You can easily change to a different colorscheme.
   -- Change the name of the colorscheme plugin below, and then
   -- change the command under that to load whatever the name of that colorscheme is.
@@ -351,15 +358,17 @@ do
       comments = { italic = false }, -- Disable italics in comments
     },
   }
-
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
   vim.cmd.colorscheme 'tokyonight-night'
-
-  -- Highlight todo, notes, etc in comments
+  -- }}}
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -- {{{ Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
   require('todo-comments').setup { signs = false }
+  -- }}}
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   -- [[ mini.nvim ]]
   --  A collection of various small independent plugins/modules

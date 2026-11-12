@@ -13,3 +13,5 @@ normal = {family = "Adwaita-Mono", style="Regular"}
 [selection]
 save_to_clipboard=true
 
+[terminal]
+shell = { program = "tmux" }
