@@ -329,6 +329,15 @@ do
   }
   -- }}} gitsigns
   -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -- {{{ diffview: un explorateur pour voir ce qui a changé
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  vim.pack.add { gh 'sindrets/diffview.nvim' }
+  vim.keymap.set('n', '<leader>go', ':DiffviewOpen<CR>',    { desc = '[G]it [O]pen diff view' })
+  vim.keymap.set('n', '<leader>gc', ':DiffviewClose<CR>',   { desc = '[G]it [C]lose diff view' })
+  -- optionnel : ne montrer que le panneau de fichiers, sans le diff
+  vim.keymap.set('n', '<leader>gf', ':DiffviewFileHistory %<CR>', { desc = '[G]it [F]ile history' })
+  -- }}} diffview
+  -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -- {{{ which-key: popup pour voir les keybindings possibles
   vim.pack.add { gh 'folke/which-key.nvim' }
   require('which-key').setup {
