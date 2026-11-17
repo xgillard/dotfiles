@@ -16,4 +16,12 @@
 # you can also pretty-print and page through the documentation for configuration
 # options using:
 #     config nu --doc | nu-highlight | less -r
+$env.config.show_banner = false
 $env.config.buffer_editor = "nvim"
+
+[ nu_plugin_inc
+  nu_plugin_polars
+  nu_plugin_gstat
+  nu_plugin_formats
+  nu_plugin_query
+] | each { plugin add $in }
