@@ -1,0 +1,28 @@
+# ~/.config/containers/systemd/vllm.container
+[Container]
+## podman run --rm \
+#    --device nvidia.com/gpu=all \
+#    -p 127.0.0.1:8000:8000 \
+#    -v /home/xgillard/MODELS/:/models:ro
+#    docker.io/vllm/vllm-openai:v0.34.0
+#    --model ... --enable-lora 
+Image=docker.io/vllm/vllm-openai:v0.34.0
+ContainerName=vllm
+
+PublishPort=127.0.0.1:8000:8000
+AddDevice=nvidia.com/gpu=all
+Volume=/home/xgillard/MODELS/:/models:ro
+Exec=--model /models/google/gemma-3-1b-it \
+     --served-model-name gemma3 \
+     --enable-lora \
+     --max-lora-rank 32
+
+[Service]
+# pas de auto-start au boot : tu le lances à la demande
+Restart=no
+TimeoutStartSec=600
+
+[Install]
+# si un jour on fait systemctl --user enable vllm.service,
+# ca permettrait de démarrer le service à chaque login.
+WantedBy=default.target
