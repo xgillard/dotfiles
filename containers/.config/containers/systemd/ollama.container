@@ -1,0 +1,36 @@
+# ~/.config/containers/systemd/vllm.container
+[Container]
+##    podman run --rm \
+#      --name vllm \
+#      --device nvidia.com/gpu=all \
+#      -p 127.0.0.1:8080:8080 \
+#      -v /home/xgillard/MODELS/:/models:ro \
+#      ghcr.io/ggml-org/llama.cpp:server-cuda12-b12429 \
+#      -m /models/google/gemma-4-12b-it/gemma-4-12b-it-qat-q4_0.gguf \
+#       --alias gemma4-12b \
+#       -ngl 99 \
+#       -c 8192 \
+#       --jinja
+#     
+     
+Image=ghcr.io/ggml-org/llama.cpp:server-cuda12-b12429
+ContainerName=ollama
+
+PublishPort=127.0.0.1:8080:8080
+AddDevice=nvidia.com/gpu=all
+Volume=/home/xgillard/MODELS/:/models:ro
+Exec=-m /models/google/gemma-4-12b-it/gemma-4-12b-it-qat-q4_0.gguf \
+     --alias gemma4-12b \
+     -ngl 99 \
+     -c 8192 \
+     --jinja
+
+[Service]
+# pas de auto-start au boot : tu le lances à la demande
+Restart=no
+TimeoutStartSec=600
+
+[Install]
+# si un jour on fait systemctl --user enable vllm.service,
+# ca permettrait de démarrer le service à chaque login.
+WantedBy=default.target
